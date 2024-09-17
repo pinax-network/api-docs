@@ -1,0 +1,2660 @@
+openapi: 3.0.3
+info:
+  title: EOS API
+  description: A collection of API endpoints for the EOS blockchain. To authenticate you will need an API Key from the [Pinax App](https://app.pinax.network). In case of any questions or issues please contact us in [Discord](https://discord.gg/pinax). 
+  version: v0.1.0
+tags:
+  - name: Account
+  - name: Search
+  - name: Blocks
+  - name: Transactions
+  - name: Actions
+  - name: Receivers
+  - name: Authorizations
+  - name: Tokens
+  - name: Transfers
+paths:
+  /account/balances:
+    get:
+      tags:
+        - Account
+      summary: Token balances
+      description: Token balances of an account.
+      parameters:
+        - name: account
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: contract
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: symcode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 10
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 1
+      responses:
+        '200':
+          description: Array of balances.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Balance'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /account/balances/historical:
+    get:
+      tags:
+        - Account
+      summary: Historical token balances
+      description: Historical token balances of an account.
+      parameters:
+        - name: account
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: block_num
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: uint64
+        - name: contract
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: symcode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 10
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 1
+      responses:
+        '200':
+          description: Array of balances.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BalanceChange'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /tokens/holders:
+    get:
+      tags:
+        - Tokens
+      summary: Token holders
+      description: List of holders of a token.
+      parameters:
+        - name: contract
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: symcode
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 10
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 1
+      responses:
+        '200':
+          description: Array of accounts.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Holder'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /tokens/supplies:
+    get:
+      tags:
+        - Tokens
+      summary: Token supply
+      description: Total supply for a token.
+      parameters:
+        - name: block_num
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+        - name: issuer
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: contract
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: symcode
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 10
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 1
+      responses:
+        '200':
+          description: Array of supplies.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Supply'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /tokens:
+    get:
+      tags:
+        - Tokens
+      summary: Tokens
+      description: List of available tokens.
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 10
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 1
+      responses:
+        '200':
+          description: Array of token identifier.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Scope'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /transfers:
+    get:
+      tags:
+        - Transfers
+      summary: Token transfers
+      description: All transfers related to a token.
+      parameters:
+        - name: block_range
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+              format: uint64
+          style: form
+          explode: false
+        - name: contract
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: symcode
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 10
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 1
+      responses:
+        '200':
+          description: Array of transfers.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transfer'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /account/transfers:
+    get:
+      tags:
+        - Account
+      summary: Token transfers from and to an account
+      description: All transfers related to an account.
+      parameters:
+        - name: account
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: block_range
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+              format: uint64
+          style: form
+          explode: false
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: contract
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: symcode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 10
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 1
+      responses:
+        '200':
+          description: Array of transfers.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transfer'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /transfers/id:
+    get:
+      tags:
+        - Transfers
+      summary: Token transfer
+      description: Specific transfer related to a token.
+      parameters:
+        - name: trx_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 10
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+            default: 1
+      responses:
+        '200':
+          description: Array of transfers.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transfer'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /actions/account/{account}:
+    get:
+      tags:
+        - Actions
+      summary: Actions
+      description: Actions by account.
+      parameters:
+        - name: account
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of actions.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Actions'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /actions/date/{date}:
+    get:
+      tags:
+        - Actions
+      summary: Actions
+      description: Actions by date.
+      parameters:
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of actions.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Actions'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /actions/name/{name}:
+    get:
+      tags:
+        - Actions
+      summary: Actions
+      description: Actions by name.
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of actions.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Actions'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /actions/number/{number}:
+    get:
+      tags:
+        - Actions
+      summary: Actions
+      description: Actions by block number.
+      parameters:
+        - name: number
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: uint64
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of actions.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Actions'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /authorizations/action/{ordinal}:
+    get:
+      tags:
+        - Authorizations
+      summary: Authorizations by action ordinal
+      description: Authorizations by action ordinal.
+      parameters:
+        - name: ordinal
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: uint32
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of authorizations.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Authorizations'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /authorizations/actor/{actor}:
+    get:
+      tags:
+        - Authorizations
+      summary: Authorizations by actor
+      description: Authorizations by actor.
+      parameters:
+        - name: actor
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of authorizations.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Authorizations'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /authorizations/date/{date}:
+    get:
+      tags:
+        - Authorizations
+      summary: Authorizations by date
+      description: Authorizations by date.
+      parameters:
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of authorizations.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Authorizations'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /authorizations/number/{number}:
+    get:
+      tags:
+        - Authorizations
+      summary: Authorizations by block number
+      description: Authorizations by block number.
+      parameters:
+        - name: number
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: uint64
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of authorizations.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Authorizations'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /authorizations/permission/{permission}:
+    get:
+      tags:
+        - Authorizations
+      summary: Authorizations by permission
+      description: Authorizations by permission.
+      parameters:
+        - name: permission
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of authorizations.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Authorizations'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /authorizations/transaction/{hash}:
+    get:
+      tags:
+        - Authorizations
+      summary: Authorizations by transaction hash
+      description: Authorizations by transaction hash.
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of authorizations.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Authorizations'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /blocks/date/{date}:
+    get:
+      tags:
+        - Blocks
+      summary: Blocks by date
+      description: Blocks by date.
+      parameters:
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of blocks.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Blocks'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /blocks/hash/{hash}:
+    get:
+      tags:
+        - Blocks
+      summary: Blocks by hash
+      description: Blocks by hash.
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of blocks.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Blocks'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /blocks/number/{number}:
+    get:
+      tags:
+        - Blocks
+      summary: Blocks by block number
+      description: Blocks by block number.
+      parameters:
+        - name: number
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: uint64
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of blocks.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Blocks'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /receivers/action/{ordinal}:
+    get:
+      tags:
+        - Receivers
+      summary: Receivers by action ordinal
+      description: Receivers by action ordinal.
+      parameters:
+        - name: ordinal
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: uint32
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of receivers.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Receivers'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /receivers/date/{date}:
+    get:
+      tags:
+        - Receivers
+      summary: Receivers by date
+      description: Receivers by date.
+      parameters:
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of receivers.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Receivers'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /receivers/number/{number}:
+    get:
+      tags:
+        - Receivers
+      summary: Receivers by block number
+      description: Receivers by block number.
+      parameters:
+        - name: number
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: uint64
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of receivers.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Receivers'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /receivers/receiver/{receiver}:
+    get:
+      tags:
+        - Receivers
+      summary: Receivers by receiver
+      description: Receivers by receiver.
+      parameters:
+        - name: receiver
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of receivers.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Receivers'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /receivers/transaction/{hash}:
+    get:
+      tags:
+        - Receivers
+      summary: Receivers by transaction hash
+      description: Receivers by transaction hash.
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of receivers.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Receivers'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /search/transactions:
+    get:
+      tags:
+        - Search
+      summary: Search transactions
+      parameters:
+        - name: account
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: action
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: auth
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: hash
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: number
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: uint64
+        - name: receiver
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SearchTransactions'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /transactions/date/{date}:
+    get:
+      tags:
+        - Transactions
+      summary: Transactions
+      description: Transactions by date.
+      parameters:
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of transactions.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Transactions'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /transactions/hash/{hash}:
+    get:
+      tags:
+        - Transactions
+      summary: Transactions by hash
+      description: Transactions by hash.
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - block_number
+            default: block_number
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: Array of transactions.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Transactions'
+                  meta:
+                    $ref: '#/components/schemas/ResponseMetadata1'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+components:
+  schemas:
+    ApiError:
+      type: object
+      required:
+        - status
+        - code
+        - message
+      properties:
+        status:
+          type: number
+          enum:
+            - 500
+            - 504
+            - 400
+            - 401
+            - 403
+            - 404
+            - 405
+        code:
+          type: string
+          enum:
+            - bad_database_response
+            - bad_header
+            - missing_required_header
+            - bad_query_input
+            - database_timeout
+            - forbidden
+            - internal_server_error
+            - method_not_allowed
+            - route_not_found
+            - unauthorized
+        message:
+          type: string
+    Balance:
+      type: object
+      required:
+        - last_updated_block
+        - contract
+        - symcode
+        - balance
+      properties:
+        last_updated_block:
+          type: integer
+          format: uint64
+        contract:
+          type: string
+        symcode:
+          type: string
+        balance:
+          type: number
+          format: double
+    BalanceChange:
+      type: object
+      required:
+        - trx_id
+        - action_index
+        - contract
+        - symcode
+        - precision
+        - amount
+        - value
+        - block_num
+        - timestamp
+        - account
+        - balance
+        - balance_delta
+      properties:
+        trx_id:
+          type: string
+        action_index:
+          type: integer
+          format: uint32
+        contract:
+          type: string
+        symcode:
+          type: string
+        precision:
+          type: integer
+          format: uint32
+        amount:
+          type: integer
+          format: int64
+        value:
+          type: number
+          format: double
+        block_num:
+          type: integer
+          format: uint64
+        timestamp:
+          type: string
+        account:
+          type: string
+        balance:
+          type: string
+        balance_delta:
+          type: integer
+          format: int64
+    Holder:
+      type: object
+      required:
+        - account
+        - balance
+      properties:
+        account:
+          type: string
+        balance:
+          type: number
+          format: double
+    Models.Scope:
+      type: object
+      required:
+        - contract
+        - symcode
+      properties:
+        contract:
+          type: string
+        symcode:
+          type: string
+    QueryStatistics:
+      type: object
+      required:
+        - elapsed
+        - rows_read
+        - bytes_read
+      properties:
+        elapsed:
+          type: number
+        rows_read:
+          type: integer
+          format: int64
+        bytes_read:
+          type: integer
+          format: int64
+    ResponseMetadata:
+      type: object
+      required:
+        - statistics
+        - next_page
+        - previous_page
+        - total_pages
+        - total_results
+      properties:
+        statistics:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/QueryStatistics'
+          nullable: true
+        next_page:
+          type: integer
+          format: int64
+        previous_page:
+          type: integer
+          format: int64
+        total_pages:
+          type: integer
+          format: int64
+        total_results:
+          type: integer
+          format: int64
+    Supply:
+      type: object
+      required:
+        - trx_id
+        - action_index
+        - contract
+        - symcode
+        - precision
+        - amount
+        - value
+        - block_num
+        - timestamp
+        - issuer
+        - max_supply
+        - supply
+        - supply_delta
+      properties:
+        trx_id:
+          type: string
+        action_index:
+          type: integer
+          format: uint32
+        contract:
+          type: string
+        symcode:
+          type: string
+        precision:
+          type: integer
+          format: uint32
+        amount:
+          type: integer
+          format: int64
+        value:
+          type: number
+          format: double
+        block_num:
+          type: integer
+          format: uint64
+        timestamp:
+          type: string
+        issuer:
+          type: string
+        max_supply:
+          type: string
+        supply:
+          type: string
+        supply_delta:
+          type: integer
+          format: int64
+    Transfer:
+      type: object
+      required:
+        - trx_id
+        - action_index
+        - contract
+        - symcode
+        - precision
+        - amount
+        - value
+        - block_num
+        - timestamp
+        - from
+        - to
+        - quantity
+        - memo
+      properties:
+        trx_id:
+          type: string
+        action_index:
+          type: integer
+          format: uint32
+        contract:
+          type: string
+        symcode:
+          type: string
+        precision:
+          type: integer
+          format: uint32
+        amount:
+          type: integer
+          format: int64
+        value:
+          type: number
+          format: double
+        block_num:
+          type: integer
+          format: uint64
+        timestamp:
+          type: string
+        from:
+          type: string
+        to:
+          type: string
+        quantity:
+          type: string
+        memo:
+          type: string
+    Models.Actions:
+      type: object
+      required:
+        - block_time
+        - block_number
+        - block_hash
+        - block_date
+        - tx_hash
+        - tx_index
+        - tx_status
+        - tx_status_code
+        - tx_success
+        - abi_sequence
+        - code_sequence
+        - digest
+        - global_sequence
+        - receipt_receiver
+        - recv_sequence
+        - account
+        - name
+        - json_data
+        - raw_data
+        - action_ordinal
+        - receiver
+        - context_free
+        - elapsed
+        - console
+        - raw_return_value
+        - json_return_value
+        - creator_action_ordinal
+        - closest_unnotified_ancestor_action_ordinal
+        - execution_index
+        - action_mroot
+      properties:
+        block_time:
+          type: string
+          format: date-time
+        block_number:
+          type: integer
+          format: uint64
+        block_hash:
+          type: string
+        block_date:
+          type: string
+          format: date
+        tx_hash:
+          type: string
+        tx_index:
+          type: integer
+          format: uint64
+        tx_status:
+          type: string
+        tx_status_code:
+          type: integer
+          format: uint8
+        tx_success:
+          type: boolean
+        abi_sequence:
+          type: integer
+          format: uint64
+        code_sequence:
+          type: integer
+          format: uint64
+        digest:
+          type: string
+        global_sequence:
+          type: integer
+          format: uint64
+        receipt_receiver:
+          type: string
+        recv_sequence:
+          type: integer
+          format: uint64
+        account:
+          type: string
+        name:
+          type: string
+        json_data:
+          type: string
+        raw_data:
+          type: string
+        action_ordinal:
+          type: integer
+          format: uint32
+        receiver:
+          type: string
+        context_free:
+          type: boolean
+        elapsed:
+          type: integer
+          format: int64
+        console:
+          type: string
+        raw_return_value:
+          type: string
+        json_return_value:
+          type: string
+        creator_action_ordinal:
+          type: integer
+          format: uint32
+        closest_unnotified_ancestor_action_ordinal:
+          type: integer
+          format: uint32
+        execution_index:
+          type: integer
+          format: uint32
+        action_mroot:
+          type: string
+    Models.Authorizations:
+      type: object
+      required:
+        - block_time
+        - block_number
+        - block_hash
+        - block_date
+        - tx_hash
+        - action_ordinal
+        - actor
+        - permission
+      properties:
+        block_time:
+          type: string
+          format: date-time
+        block_number:
+          type: integer
+          format: uint64
+        block_hash:
+          type: string
+        block_date:
+          type: string
+          format: date
+        tx_hash:
+          type: string
+        action_ordinal:
+          type: integer
+          format: uint32
+        actor:
+          type: string
+        permission:
+          type: string
+    Models.Blocks:
+      type: object
+      required:
+        - block_time
+        - block_number
+        - block_hash
+        - block_date
+        - previous
+        - producer
+        - confirmed
+        - schedule_version
+        - version
+        - producer_signature
+        - dpos_proposed_irreversible_blocknum
+        - dpos_irreversible_blocknum
+        - transaction_mroot
+        - action_mroot
+        - blockroot_merkle_node_count
+        - size
+        - total_transactions
+        - successful_transactions
+        - failed_transactions
+        - total_actions
+        - total_db_ops
+      properties:
+        block_time:
+          type: string
+          format: date-time
+        block_number:
+          type: integer
+          format: uint64
+        block_hash:
+          type: string
+        block_date:
+          type: string
+          format: date
+        previous:
+          type: string
+        producer:
+          type: string
+        confirmed:
+          type: integer
+          format: uint32
+        schedule_version:
+          type: integer
+          format: uint32
+        version:
+          type: integer
+          format: uint32
+        producer_signature:
+          type: string
+        dpos_proposed_irreversible_blocknum:
+          type: integer
+          format: uint32
+        dpos_irreversible_blocknum:
+          type: integer
+          format: uint32
+        transaction_mroot:
+          type: string
+        action_mroot:
+          type: string
+        blockroot_merkle_node_count:
+          type: integer
+          format: uint32
+        size:
+          type: integer
+          format: uint64
+        total_transactions:
+          type: integer
+          format: uint64
+        successful_transactions:
+          type: integer
+          format: uint64
+        failed_transactions:
+          type: integer
+          format: uint64
+        total_actions:
+          type: integer
+          format: uint64
+        total_db_ops:
+          type: integer
+          format: uint64
+    Models.Receivers:
+      type: object
+      required:
+        - block_time
+        - block_number
+        - block_hash
+        - block_date
+        - tx_hash
+        - action_ordinal
+        - receiver
+      properties:
+        block_time:
+          type: string
+          format: date-time
+        block_number:
+          type: integer
+          format: uint64
+        block_hash:
+          type: string
+        block_date:
+          type: string
+          format: date
+        tx_hash:
+          type: string
+        action_ordinal:
+          type: integer
+          format: uint32
+        receiver:
+          type: string
+    Models.Transactions:
+      type: object
+      required:
+        - block_time
+        - block_number
+        - block_hash
+        - block_date
+        - hash
+        - index
+        - elapsed
+        - net_usage
+        - scheduled
+        - cpu_usage_micro_seconds
+        - net_usage_words
+        - status
+        - status_code
+        - success
+        - transaction_mroot
+      properties:
+        block_time:
+          type: string
+          format: date-time
+        block_number:
+          type: integer
+          format: uint64
+        block_hash:
+          type: string
+        block_date:
+          type: string
+          format: date
+        hash:
+          type: string
+        index:
+          type: integer
+          format: uint64
+        elapsed:
+          type: integer
+          format: int64
+        net_usage:
+          type: integer
+          format: uint64
+        scheduled:
+          type: boolean
+        cpu_usage_micro_seconds:
+          type: integer
+          format: uint32
+        net_usage_words:
+          type: integer
+          format: uint32
+        status:
+          type: string
+        status_code:
+          type: integer
+          format: uint8
+        success:
+          type: boolean
+        transaction_mroot:
+          type: string
+    ResponseMetadata1:
+      type: object
+      required:
+        - statistics
+        - total_results
+      properties:
+        statistics:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/QueryStatistics'
+          nullable: true
+        total_results:
+          type: integer
+          format: int64
+    SearchTransactions:
+      type: object
+      required:
+        - block_time
+        - block_number
+        - block_hash
+        - block_date
+        - hash
+        - index
+        - elapsed
+        - net_usage
+        - scheduled
+        - cpu_usage_micro_seconds
+        - net_usage_words
+        - status
+        - status_code
+        - success
+        - transaction_mroot
+        - actions
+        - authorizations
+        - receivers
+      properties:
+        block_time:
+          type: string
+          format: date-time
+        block_number:
+          type: integer
+          format: uint64
+        block_hash:
+          type: string
+        block_date:
+          type: string
+          format: date
+        hash:
+          type: string
+        index:
+          type: integer
+          format: uint64
+        elapsed:
+          type: integer
+          format: int64
+        net_usage:
+          type: integer
+          format: uint64
+        scheduled:
+          type: boolean
+        cpu_usage_micro_seconds:
+          type: integer
+          format: uint32
+        net_usage_words:
+          type: integer
+          format: uint32
+        status:
+          type: string
+        status_code:
+          type: integer
+          format: uint8
+        success:
+          type: boolean
+        transaction_mroot:
+          type: string
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Models.Actions'
+        authorizations:
+          type: array
+          items:
+            type: object
+            properties:
+              tx_hash:
+                type: string
+              action_ordinal:
+                type: integer
+                format: uint32
+              actor:
+                type: string
+              permission:
+                type: string
+            required:
+              - tx_hash
+              - action_ordinal
+              - actor
+              - permission
+        receivers:
+          type: array
+          items:
+            type: object
+            properties:
+              tx_hash:
+                type: string
+              action_ordinal:
+                type: integer
+                format: uint32
+              receiver:
+                type: string
+            required:
+              - tx_hash
+              - action_ordinal
+              - receiver
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Api-Key
