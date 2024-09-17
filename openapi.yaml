@@ -515,7 +515,7 @@ paths:
     get:
       tags:
         - Actions
-      summary: Actions
+      summary: Actions by account
       description: Actions by account.
       parameters:
         - name: account
@@ -583,7 +583,7 @@ paths:
     get:
       tags:
         - Actions
-      summary: Actions
+      summary: Actions by date
       description: Actions by date.
       parameters:
         - name: date
@@ -652,7 +652,7 @@ paths:
     get:
       tags:
         - Actions
-      summary: Actions
+      summary: Actions by name
       description: Actions by name.
       parameters:
         - name: name
@@ -720,7 +720,7 @@ paths:
     get:
       tags:
         - Actions
-      summary: Actions
+      summary: Actions by number
       description: Actions by block number.
       parameters:
         - name: number
