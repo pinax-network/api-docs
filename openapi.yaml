@@ -3,6 +3,8 @@ info:
   title: EOS API
   description: A collection of API endpoints for the EOS blockchain. To authenticate you will need an API Key from the [Pinax App](https://app.pinax.network). In case of any questions or issues please contact us in [Discord](https://discord.gg/pinax). 
   version: v0.1.0
+servers:
+  - url: https://eos.api.pinax.network/v1
 tags:
   - name: Account
   - name: Search
