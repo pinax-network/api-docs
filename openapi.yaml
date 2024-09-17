@@ -720,7 +720,7 @@ paths:
     get:
       tags:
         - Actions
-      summary: Actions by number
+      summary: Actions by block number
       description: Actions by block number.
       parameters:
         - name: number
