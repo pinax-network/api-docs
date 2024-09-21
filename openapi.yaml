@@ -7,12 +7,14 @@ servers:
   - url: https://eos.api.pinax.network/v1
 tags:
   - name: Account
+  - name: Tokens
+  - name: Transfers
   - name: Blocks
   - name: Transactions
   - name: Actions
+  - name: Database Operations
   - name: Authorizations
-  - name: Tokens
-  - name: Transfers
+
 paths:
   /account/balances:
     get:
@@ -509,40 +511,27 @@ paths:
                 $ref: '#/components/schemas/ApiError'
       security:
         - ApiKeyAuth: []
-  /actions/account/{account}:
+  # Transactions API
+  /actions/tx_hash/{tx_hash}:
     get:
       tags:
         - Actions
-      summary: Actions by account
-      description: Actions by account.
+      operationId: Usage_actionsByTransaction
+      summary: Actions by transaction
       parameters:
-        - name: account
+        - name: tx_hash
           in: path
           required: true
           schema:
             type: string
-        - name: first
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 10
-        - name: skip
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 0
         - name: order_by
           in: query
           required: false
           schema:
             type: string
             enum:
-              - block_number
-            default: block_number
+              - index
+            default: index
         - name: order_direction
           in: query
           required: false
@@ -551,52 +540,14 @@ paths:
             enum:
               - asc
               - desc
-            default: desc
-      responses:
-        '200':
-          description: Array of actions.
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - data
-                  - meta
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Models.Actions'
-                  meta:
-                    $ref: '#/components/schemas/ResponseMetadata1'
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-      security:
-        - ApiKeyAuth: []
-  /actions/date/{date}:
-    get:
-      tags:
-        - Actions
-      summary: Actions by date
-      description: Actions by date.
-      parameters:
-        - name: date
-          in: path
-          required: true
-          schema:
-            type: string
-            format: date
+            default: asc
         - name: first
           in: query
           required: false
           schema:
             type: integer
             format: int64
-            default: 10
+            default: 20
         - name: skip
           in: query
           required: false
@@ -604,40 +555,57 @@ paths:
             type: integer
             format: int64
             default: 0
-        - name: order_by
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - block_number
-            default: block_number
-        - name: order_direction
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - asc
-              - desc
-            default: desc
       responses:
         '200':
-          description: Array of actions.
+          description: The request has succeeded.
           content:
             application/json:
               schema:
                 type: object
                 required:
                   - data
+                  - statistics
+                  - rows
+                  - rows_before_limit_at_least
                   - meta
                 properties:
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Models.Actions'
+                  statistics:
+                    type: object
+                    properties:
+                      elapsed:
+                        type: number
+                      rows_read:
+                        type: integer
+                        format: int64
+                      bytes_read:
+                        type: integer
+                        format: int64
+                    required:
+                      - elapsed
+                      - rows_read
+                      - bytes_read
+                  rows:
+                    type: integer
+                    format: int64
+                  rows_before_limit_at_least:
+                    type: integer
+                    format: int64
                   meta:
-                    $ref: '#/components/schemas/ResponseMetadata1'
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                        - name
+                        - type
         default:
           description: An unexpected error response.
           content:
@@ -646,178 +614,34 @@ paths:
                 $ref: '#/components/schemas/ApiError'
       security:
         - ApiKeyAuth: []
-  /actions/name/{name}:
-    get:
-      tags:
-        - Actions
-      summary: Actions by name
-      description: Actions by name.
-      parameters:
-        - name: name
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: first
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 10
-        - name: skip
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 0
-        - name: order_by
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - block_number
-            default: block_number
-        - name: order_direction
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - asc
-              - desc
-            default: desc
-      responses:
-        '200':
-          description: Array of actions.
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - data
-                  - meta
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Models.Actions'
-                  meta:
-                    $ref: '#/components/schemas/ResponseMetadata1'
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-      security:
-        - ApiKeyAuth: []
-  /actions/number/{number}:
-    get:
-      tags:
-        - Actions
-      summary: Actions by block number
-      description: Actions by block number.
-      parameters:
-        - name: number
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: uint64
-        - name: first
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 10
-        - name: skip
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 0
-        - name: order_by
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - block_number
-            default: block_number
-        - name: order_direction
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - asc
-              - desc
-            default: desc
-      responses:
-        '200':
-          description: Array of actions.
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - data
-                  - meta
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Models.Actions'
-                  meta:
-                    $ref: '#/components/schemas/ResponseMetadata1'
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-      security:
-        - ApiKeyAuth: []
-  /authorizations/action/{ordinal}:
+  /authorizations/tx_hash/{tx_hash}:
     get:
       tags:
         - Authorizations
-      summary: Authorizations by action ordinal
-      description: Authorizations by action ordinal.
+      operationId: Usage_authorizations
+      summary: Authorizations by transaction
       parameters:
-        - name: ordinal
+        - name: tx_hash
           in: path
           required: true
+          schema:
+            type: string
+        - name: action_index
+          in: query
+          required: false
           schema:
             type: integer
             format: uint32
-        - name: first
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 10
-        - name: skip
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 0
         - name: order_by
           in: query
           required: false
           schema:
             type: string
             enum:
-              - block_number
-            default: block_number
+              - action_index,index
+              - action_index
+              - index
+            default: action_index,index
         - name: order_direction
           in: query
           required: false
@@ -826,51 +650,14 @@ paths:
             enum:
               - asc
               - desc
-            default: desc
-      responses:
-        '200':
-          description: Array of authorizations.
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - data
-                  - meta
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Models.Authorizations'
-                  meta:
-                    $ref: '#/components/schemas/ResponseMetadata1'
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-      security:
-        - ApiKeyAuth: []
-  /authorizations/actor/{actor}:
-    get:
-      tags:
-        - Authorizations
-      summary: Authorizations by actor
-      description: Authorizations by actor.
-      parameters:
-        - name: actor
-          in: path
-          required: true
-          schema:
-            type: string
+            default: asc
         - name: first
           in: query
           required: false
           schema:
             type: integer
             format: int64
-            default: 10
+            default: 20
         - name: skip
           in: query
           required: false
@@ -878,314 +665,57 @@ paths:
             type: integer
             format: int64
             default: 0
-        - name: order_by
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - block_number
-            default: block_number
-        - name: order_direction
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - asc
-              - desc
-            default: desc
       responses:
         '200':
-          description: Array of authorizations.
+          description: The request has succeeded.
           content:
             application/json:
               schema:
                 type: object
                 required:
                   - data
+                  - statistics
+                  - rows
+                  - rows_before_limit_at_least
                   - meta
                 properties:
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Models.Authorizations'
+                  statistics:
+                    type: object
+                    properties:
+                      elapsed:
+                        type: number
+                      rows_read:
+                        type: integer
+                        format: int64
+                      bytes_read:
+                        type: integer
+                        format: int64
+                    required:
+                      - elapsed
+                      - rows_read
+                      - bytes_read
+                  rows:
+                    type: integer
+                    format: int64
+                  rows_before_limit_at_least:
+                    type: integer
+                    format: int64
                   meta:
-                    $ref: '#/components/schemas/ResponseMetadata1'
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-      security:
-        - ApiKeyAuth: []
-  /authorizations/date/{date}:
-    get:
-      tags:
-        - Authorizations
-      summary: Authorizations by date
-      description: Authorizations by date.
-      parameters:
-        - name: date
-          in: path
-          required: true
-          schema:
-            type: string
-            format: date
-        - name: first
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 10
-        - name: skip
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 0
-        - name: order_by
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - block_number
-            default: block_number
-        - name: order_direction
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - asc
-              - desc
-            default: desc
-      responses:
-        '200':
-          description: Array of authorizations.
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - data
-                  - meta
-                properties:
-                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Models.Authorizations'
-                  meta:
-                    $ref: '#/components/schemas/ResponseMetadata1'
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-      security:
-        - ApiKeyAuth: []
-  /authorizations/number/{number}:
-    get:
-      tags:
-        - Authorizations
-      summary: Authorizations by block number
-      description: Authorizations by block number.
-      parameters:
-        - name: number
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: uint64
-        - name: first
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 10
-        - name: skip
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 0
-        - name: order_by
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - block_number
-            default: block_number
-        - name: order_direction
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - asc
-              - desc
-            default: desc
-      responses:
-        '200':
-          description: Array of authorizations.
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - data
-                  - meta
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Models.Authorizations'
-                  meta:
-                    $ref: '#/components/schemas/ResponseMetadata1'
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-      security:
-        - ApiKeyAuth: []
-  /authorizations/permission/{permission}:
-    get:
-      tags:
-        - Authorizations
-      summary: Authorizations by permission
-      description: Authorizations by permission.
-      parameters:
-        - name: permission
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: first
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 10
-        - name: skip
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 0
-        - name: order_by
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - block_number
-            default: block_number
-        - name: order_direction
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - asc
-              - desc
-            default: desc
-      responses:
-        '200':
-          description: Array of authorizations.
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - data
-                  - meta
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Models.Authorizations'
-                  meta:
-                    $ref: '#/components/schemas/ResponseMetadata1'
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-      security:
-        - ApiKeyAuth: []
-  /authorizations/transaction/{hash}:
-    get:
-      tags:
-        - Authorizations
-      summary: Authorizations by transaction hash
-      description: Authorizations by transaction hash.
-      parameters:
-        - name: hash
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: first
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 10
-        - name: skip
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 0
-        - name: order_by
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - block_number
-            default: block_number
-        - name: order_direction
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - asc
-              - desc
-            default: desc
-      responses:
-        '200':
-          description: Array of authorizations.
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - data
-                  - meta
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Models.Authorizations'
-                  meta:
-                    $ref: '#/components/schemas/ResponseMetadata1'
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                        - name
+                        - type
         default:
           description: An unexpected error response.
           content:
@@ -1198,8 +728,8 @@ paths:
     get:
       tags:
         - Blocks
+      operationId: Usage_blocksByDate
       summary: Blocks by date
-      description: Blocks by date.
       parameters:
         - name: date
           in: path
@@ -1207,28 +737,14 @@ paths:
           schema:
             type: string
             format: date
-        - name: first
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 10
-        - name: skip
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 0
         - name: order_by
           in: query
           required: false
           schema:
             type: string
             enum:
-              - block_number
-            default: block_number
+              - number
+            default: number
         - name: order_direction
           in: query
           required: false
@@ -1237,24 +753,72 @@ paths:
             enum:
               - asc
               - desc
-            default: desc
+            default: asc
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 20
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
       responses:
         '200':
-          description: Array of blocks.
+          description: The request has succeeded.
           content:
             application/json:
               schema:
                 type: object
                 required:
                   - data
+                  - statistics
+                  - rows
+                  - rows_before_limit_at_least
                   - meta
                 properties:
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Models.Blocks'
+                  statistics:
+                    type: object
+                    properties:
+                      elapsed:
+                        type: number
+                      rows_read:
+                        type: integer
+                        format: int64
+                      bytes_read:
+                        type: integer
+                        format: int64
+                    required:
+                      - elapsed
+                      - rows_read
+                      - bytes_read
+                  rows:
+                    type: integer
+                    format: int64
+                  rows_before_limit_at_least:
+                    type: integer
+                    format: int64
                   meta:
-                    $ref: '#/components/schemas/ResponseMetadata1'
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                        - name
+                        - type
         default:
           description: An unexpected error response.
           content:
@@ -1267,62 +831,65 @@ paths:
     get:
       tags:
         - Blocks
+      operationId: Usage_blocksByHash
       summary: Blocks by hash
-      description: Blocks by hash.
       parameters:
         - name: hash
           in: path
           required: true
           schema:
             type: string
-        - name: first
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 10
-        - name: skip
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 0
-        - name: order_by
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - block_number
-            default: block_number
-        - name: order_direction
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - asc
-              - desc
-            default: desc
       responses:
         '200':
-          description: Array of blocks.
+          description: The request has succeeded.
           content:
             application/json:
               schema:
                 type: object
                 required:
                   - data
+                  - statistics
+                  - rows
+                  - rows_before_limit_at_least
                   - meta
                 properties:
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Models.Blocks'
+                  statistics:
+                    type: object
+                    properties:
+                      elapsed:
+                        type: number
+                      rows_read:
+                        type: integer
+                        format: int64
+                      bytes_read:
+                        type: integer
+                        format: int64
+                    required:
+                      - elapsed
+                      - rows_read
+                      - bytes_read
+                  rows:
+                    type: integer
+                    format: int64
+                  rows_before_limit_at_least:
+                    type: integer
+                    format: int64
                   meta:
-                    $ref: '#/components/schemas/ResponseMetadata1'
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                        - name
+                        - type
         default:
           description: An unexpected error response.
           content:
@@ -1335,8 +902,8 @@ paths:
     get:
       tags:
         - Blocks
-      summary: Blocks by block number
-      description: Blocks by block number.
+      operationId: Usage_blocksByNumber
+      summary: Blocks by number
       parameters:
         - name: number
           in: path
@@ -1344,28 +911,92 @@ paths:
           schema:
             type: integer
             format: uint64
-        - name: first
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - statistics
+                  - rows
+                  - rows_before_limit_at_least
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Blocks'
+                  statistics:
+                    type: object
+                    properties:
+                      elapsed:
+                        type: number
+                      rows_read:
+                        type: integer
+                        format: int64
+                      bytes_read:
+                        type: integer
+                        format: int64
+                    required:
+                      - elapsed
+                      - rows_read
+                      - bytes_read
+                  rows:
+                    type: integer
+                    format: int64
+                  rows_before_limit_at_least:
+                    type: integer
+                    format: int64
+                  meta:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                        - name
+                        - type
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /db_ops/tx_hash/{tx_hash}:
+    get:
+      tags:
+        - Database Operations
+      operationId: Usage_db_ops
+      summary: Database operations by transaction
+      parameters:
+        - name: tx_hash
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: action_index
           in: query
           required: false
           schema:
             type: integer
-            format: int64
-            default: 10
-        - name: skip
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 0
+            format: uint32
         - name: order_by
           in: query
           required: false
           schema:
             type: string
             enum:
-              - block_number
-            default: block_number
+              - index
+              - action_index
+            default: index
         - name: order_direction
           in: query
           required: false
@@ -1374,24 +1005,72 @@ paths:
             enum:
               - asc
               - desc
-            default: desc
+            default: asc
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 20
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
       responses:
         '200':
-          description: Array of blocks.
+          description: The request has succeeded.
           content:
             application/json:
               schema:
                 type: object
                 required:
                   - data
+                  - statistics
+                  - rows
+                  - rows_before_limit_at_least
                   - meta
                 properties:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Models.Blocks'
+                      $ref: '#/components/schemas/Models.Authorizations'
+                  statistics:
+                    type: object
+                    properties:
+                      elapsed:
+                        type: number
+                      rows_read:
+                        type: integer
+                        format: int64
+                      bytes_read:
+                        type: integer
+                        format: int64
+                    required:
+                      - elapsed
+                      - rows_read
+                      - bytes_read
+                  rows:
+                    type: integer
+                    format: int64
+                  rows_before_limit_at_least:
+                    type: integer
+                    format: int64
                   meta:
-                    $ref: '#/components/schemas/ResponseMetadata1'
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                        - name
+                        - type
         default:
           description: An unexpected error response.
           content:
@@ -1404,8 +1083,8 @@ paths:
     get:
       tags:
         - Transactions
-      summary: Transactions
-      description: Transactions by date.
+      operationId: Usage_transactionsByBlockDate
+      summary: Transactions by date
       parameters:
         - name: block_date
           in: path
@@ -1413,20 +1092,6 @@ paths:
           schema:
             type: string
             format: date
-        - name: first
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 10
-        - name: skip
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-            default: 0
         - name: order_by
           in: query
           required: false
@@ -1446,23 +1111,174 @@ paths:
               - asc
               - desc
             default: asc
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 20
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
       responses:
         '200':
-          description: Array of transactions.
+          description: The request has succeeded.
           content:
             application/json:
               schema:
                 type: object
                 required:
                   - data
+                  - statistics
+                  - rows
+                  - rows_before_limit_at_least
                   - meta
                 properties:
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Models.Transactions'
+                  statistics:
+                    type: object
+                    properties:
+                      elapsed:
+                        type: number
+                      rows_read:
+                        type: integer
+                        format: int64
+                      bytes_read:
+                        type: integer
+                        format: int64
+                    required:
+                      - elapsed
+                      - rows_read
+                      - bytes_read
+                  rows:
+                    type: integer
+                    format: int64
+                  rows_before_limit_at_least:
+                    type: integer
+                    format: int64
                   meta:
-                    $ref: '#/components/schemas/ResponseMetadata1'
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                        - name
+                        - type
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - ApiKeyAuth: []
+  /transactions/block_number/{block_number}:
+    get:
+      tags:
+        - Transactions
+      operationId: Usage_transactionsByBlockNumber
+      summary: Transactions by block
+      parameters:
+        - name: block_number
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: uint64
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - index
+            default: index
+        - name: order_direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: asc
+        - name: first
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 20
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 0
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - statistics
+                  - rows
+                  - rows_before_limit_at_least
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Models.Transactions'
+                  statistics:
+                    type: object
+                    properties:
+                      elapsed:
+                        type: number
+                      rows_read:
+                        type: integer
+                        format: int64
+                      bytes_read:
+                        type: integer
+                        format: int64
+                    required:
+                      - elapsed
+                      - rows_read
+                      - bytes_read
+                  rows:
+                    type: integer
+                    format: int64
+                  rows_before_limit_at_least:
+                    type: integer
+                    format: int64
+                  meta:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                        - name
+                        - type
         default:
           description: An unexpected error response.
           content:
@@ -1475,8 +1291,8 @@ paths:
     get:
       tags:
         - Transactions
+      operationId: Usage_transactionsByHash
       summary: Transactions by hash
-      description: Transactions by hash.
       parameters:
         - name: hash
           in: path
@@ -1485,21 +1301,55 @@ paths:
             type: string
       responses:
         '200':
-          description: Array of transactions.
+          description: The request has succeeded.
           content:
             application/json:
               schema:
                 type: object
                 required:
                   - data
+                  - statistics
+                  - rows
+                  - rows_before_limit_at_least
                   - meta
                 properties:
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Models.Transactions'
+                  statistics:
+                    type: object
+                    properties:
+                      elapsed:
+                        type: number
+                      rows_read:
+                        type: integer
+                        format: int64
+                      bytes_read:
+                        type: integer
+                        format: int64
+                    required:
+                      - elapsed
+                      - rows_read
+                      - bytes_read
+                  rows:
+                    type: integer
+                    format: int64
+                  rows_before_limit_at_least:
+                    type: integer
+                    format: int64
                   meta:
-                    $ref: '#/components/schemas/ResponseMetadata1'
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                        - name
+                        - type
         default:
           description: An unexpected error response.
           content:
@@ -2045,20 +1895,6 @@ components:
           type: boolean
         transaction_mroot:
           type: string
-    ResponseMetadata1:
-      type: object
-      required:
-        - statistics
-        - total_results
-      properties:
-        statistics:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/QueryStatistics'
-          nullable: true
-        total_results:
-          type: integer
-          format: int64
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
