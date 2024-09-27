@@ -2,10 +2,10 @@
 
 ### OpenAPI Spec
 
-> Copy the following files to the root directory.
+> Copy the OpenAPI JSON files from the API repos to this root directory.
 
-- `tokens-openapi.json`
-- `transactions-openapi.json`
+- [`tokens-openapi.json`](https://github.com/pinax-network/antelope-token-api/blob/main/static/%40typespec/openapi3/openapi.json)
+- [`transactions-openapi.json`](https://github.com/pinax-network/antelope-transactions-api/blob/main/static/%40typespec/openapi3/openapi.json)
 
 ### Generate API Docs
 
