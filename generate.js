@@ -1,14 +1,16 @@
+// curl http://eos.antelope-token-api.pinax.mar-prod1.pinax.io/openapi | jq . > token-openapi.json
+// curl http://eos.antelope-transactions-api.pinax.mar-prod1.pinax.io/ | jq . > transactions-openapi.json
 // bun generate.js
 
 import fs from "fs";
 import transactionsOpenApi from "./transactions-openapi.json";
-import tokensOpenApi from "./tokens-openapi.json";
+import tokenOpenApi from "./token-openapi.json";
 
 const chains = ["EOS", "Kylin", "WAX"]
 
 // Rename title
 transactionsOpenApi.info.title = "Transactions API";
-tokensOpenApi.info.title = "Token API";
+tokenOpenApi.info.title = "Token API";
 
 // Set Tags as title
 function replaceTags(openapi, tags) {
@@ -18,7 +20,7 @@ function replaceTags(openapi, tags) {
         }
     }
 }
-replaceTags(tokensOpenApi, [tokensOpenApi.info.title]);
+replaceTags(tokenOpenApi, [tokenOpenApi.info.title]);
 replaceTags(transactionsOpenApi, [transactionsOpenApi.info.title]);
 
 for (const chain of chains) {
@@ -31,12 +33,12 @@ for (const chain of chains) {
         },
         servers: [{ url: `https://${chain.toLowerCase()}.api.pinax.network/v1` }],
         tags: [
-            { name: tokensOpenApi.info.title, description: "Token balances, transfers, holders & supply data", externalDocs: { url: "https://github.com/pinax-network/antelope-token-api" } },
+            { name: tokenOpenApi.info.title, description: "Token balances, transfers, holders & supply data", externalDocs: { url: "https://github.com/pinax-network/antelope-token-api" } },
             { name: transactionsOpenApi.info.title, description: "Transactions, actions & database operations data", externalDocs: { url: "https://github.com/pinax-network/antelope-transactions-api" } },
         ],
-        paths: Object.assign(tokensOpenApi.paths, transactionsOpenApi.paths),
+        paths: Object.assign(tokenOpenApi.paths, transactionsOpenApi.paths),
         components: {
-            schemas: Object.assign(tokensOpenApi.components.schemas, transactionsOpenApi.components.schemas),
+            schemas: Object.assign(tokenOpenApi.components.schemas, transactionsOpenApi.components.schemas),
             securitySchemes: {
                 ApiKeyAuth: {
                     type: "apiKey",

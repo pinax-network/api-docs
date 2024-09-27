@@ -1,2854 +1,2854 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-        "title": "Antelope Transactions Api",
-        "summary": "Transactions information from the Antelope blockchains, powered by Substreams",
-        "license": {
-            "name": "MIT",
-            "url": "https://github.com/pinax-network/antelope-transactions-api/blob/75db1c61477ac7ea5e56f775cefe54875af953d4/LICENSE"
-        },
-        "version": "0.3.4"
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Antelope Transactions Api",
+    "summary": "Transactions information from the Antelope blockchains, powered by Substreams",
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/pinax-network/antelope-transactions-api/blob/75db1c61477ac7ea5e56f775cefe54875af953d4/LICENSE"
     },
-    "tags": [
-        {
-            "name": "Usage"
-        },
-        {
-            "name": "Blocks"
-        },
-        {
-            "name": "Transactions"
-        },
-        {
-            "name": "Actions"
-        },
-        {
-            "name": "Database Operations"
-        },
-        {
-            "name": "Authorizations"
-        },
-        {
-            "name": "Docs"
-        },
-        {
-            "name": "Monitoring"
-        }
-    ],
-    "paths": {
-        "/actions/block_date/{block_date}": {
-            "get": {
-                "tags": [
-                    "Usage",
-                    "Actions"
-                ],
-                "operationId": "Usage_actionsByDate",
-                "summary": "Actions by date",
-                "parameters": [
-                    {
-                        "name": "block_date",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "date"
-                        }
-                    },
-                    {
-                        "name": "account",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "receiver",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "order_by",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "block_number,index",
-                                "block_number"
-                            ],
-                            "default": "block_number,index"
-                        }
-                    },
-                    {
-                        "name": "order_direction",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ],
-                            "default": "asc"
-                        }
-                    },
-                    {
-                        "name": "first",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 20
-                        }
-                    },
-                    {
-                        "name": "skip",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 0
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The request has succeeded.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "data",
-                                        "statistics",
-                                        "rows",
-                                        "rows_before_limit_at_least"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Models.Actions"
-                                            }
-                                        },
-                                        "statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "elapsed": {
-                                                    "type": "number"
-                                                },
-                                                "rows_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                },
-                                                "bytes_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                }
-                                            },
-                                            "required": [
-                                                "elapsed",
-                                                "rows_read",
-                                                "bytes_read"
-                                            ]
-                                        },
-                                        "rows": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        },
-                                        "rows_before_limit_at_least": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ]
-            }
-        },
-        "/actions/block_number/{block_number}": {
-            "get": {
-                "tags": [
-                    "Usage",
-                    "Actions"
-                ],
-                "operationId": "Usage_actionsByBlock",
-                "summary": "Actions by block",
-                "parameters": [
-                    {
-                        "name": "block_number",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "uint64"
-                        }
-                    },
-                    {
-                        "name": "account",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "receiver",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "order_by",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "block_number,index",
-                                "block_number"
-                            ],
-                            "default": "block_number,index"
-                        }
-                    },
-                    {
-                        "name": "order_direction",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ],
-                            "default": "asc"
-                        }
-                    },
-                    {
-                        "name": "first",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 20
-                        }
-                    },
-                    {
-                        "name": "skip",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 0
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The request has succeeded.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "data",
-                                        "statistics",
-                                        "rows",
-                                        "rows_before_limit_at_least"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Models.Actions"
-                                            }
-                                        },
-                                        "statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "elapsed": {
-                                                    "type": "number"
-                                                },
-                                                "rows_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                },
-                                                "bytes_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                }
-                                            },
-                                            "required": [
-                                                "elapsed",
-                                                "rows_read",
-                                                "bytes_read"
-                                            ]
-                                        },
-                                        "rows": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        },
-                                        "rows_before_limit_at_least": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ]
-            }
-        },
-        "/actions/tx_hash/{tx_hash}": {
-            "get": {
-                "tags": [
-                    "Usage",
-                    "Actions"
-                ],
-                "operationId": "Usage_actionsByTransaction",
-                "summary": "Actions by transaction",
-                "parameters": [
-                    {
-                        "name": "tx_hash",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "account",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "receiver",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "order_by",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "index"
-                            ],
-                            "default": "index"
-                        }
-                    },
-                    {
-                        "name": "order_direction",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ],
-                            "default": "asc"
-                        }
-                    },
-                    {
-                        "name": "first",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 20
-                        }
-                    },
-                    {
-                        "name": "skip",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 0
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The request has succeeded.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "data",
-                                        "statistics",
-                                        "rows",
-                                        "rows_before_limit_at_least"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Models.Actions"
-                                            }
-                                        },
-                                        "statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "elapsed": {
-                                                    "type": "number"
-                                                },
-                                                "rows_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                },
-                                                "bytes_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                }
-                                            },
-                                            "required": [
-                                                "elapsed",
-                                                "rows_read",
-                                                "bytes_read"
-                                            ]
-                                        },
-                                        "rows": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        },
-                                        "rows_before_limit_at_least": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ]
-            }
-        },
-        "/authorizations/block_date/{block_date}": {
-            "get": {
-                "tags": [
-                    "Usage",
-                    "Authorizations"
-                ],
-                "operationId": "Usage_authorizationsByDate",
-                "summary": "Authorizations by date",
-                "parameters": [
-                    {
-                        "name": "block_date",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "date"
-                        }
-                    },
-                    {
-                        "name": "actor",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "permission",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "action_index",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "uint32"
-                        }
-                    },
-                    {
-                        "name": "order_by",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "block_number,action_index,index",
-                                "block_number",
-                                "action_index",
-                                "index"
-                            ],
-                            "default": "block_number,action_index,index"
-                        }
-                    },
-                    {
-                        "name": "order_direction",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ],
-                            "default": "asc"
-                        }
-                    },
-                    {
-                        "name": "first",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 20
-                        }
-                    },
-                    {
-                        "name": "skip",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 0
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The request has succeeded.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "data",
-                                        "statistics",
-                                        "rows",
-                                        "rows_before_limit_at_least"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Models.Authorizations"
-                                            }
-                                        },
-                                        "statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "elapsed": {
-                                                    "type": "number"
-                                                },
-                                                "rows_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                },
-                                                "bytes_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                }
-                                            },
-                                            "required": [
-                                                "elapsed",
-                                                "rows_read",
-                                                "bytes_read"
-                                            ]
-                                        },
-                                        "rows": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        },
-                                        "rows_before_limit_at_least": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ]
-            }
-        },
-        "/authorizations/block_number/{block_number}": {
-            "get": {
-                "tags": [
-                    "Usage",
-                    "Authorizations"
-                ],
-                "operationId": "Usage_authorizationsByBlock",
-                "summary": "Authorizations by block",
-                "parameters": [
-                    {
-                        "name": "block_number",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "uint64"
-                        }
-                    },
-                    {
-                        "name": "actor",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "permission",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "action_index",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "uint32"
-                        }
-                    },
-                    {
-                        "name": "order_by",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "block_number,action_index,index",
-                                "block_number",
-                                "action_index",
-                                "index"
-                            ],
-                            "default": "block_number,action_index,index"
-                        }
-                    },
-                    {
-                        "name": "order_direction",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ],
-                            "default": "asc"
-                        }
-                    },
-                    {
-                        "name": "first",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 20
-                        }
-                    },
-                    {
-                        "name": "skip",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 0
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The request has succeeded.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "data",
-                                        "statistics",
-                                        "rows",
-                                        "rows_before_limit_at_least"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Models.Authorizations"
-                                            }
-                                        },
-                                        "statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "elapsed": {
-                                                    "type": "number"
-                                                },
-                                                "rows_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                },
-                                                "bytes_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                }
-                                            },
-                                            "required": [
-                                                "elapsed",
-                                                "rows_read",
-                                                "bytes_read"
-                                            ]
-                                        },
-                                        "rows": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        },
-                                        "rows_before_limit_at_least": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ]
-            }
-        },
-        "/authorizations/tx_hash/{tx_hash}": {
-            "get": {
-                "tags": [
-                    "Usage",
-                    "Authorizations"
-                ],
-                "operationId": "Usage_authorizationsByTransaction",
-                "summary": "Authorizations by transaction",
-                "parameters": [
-                    {
-                        "name": "tx_hash",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "actor",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "permission",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "action_index",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "uint32"
-                        }
-                    },
-                    {
-                        "name": "order_by",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "action_index,index",
-                                "action_index",
-                                "index"
-                            ],
-                            "default": "action_index,index"
-                        }
-                    },
-                    {
-                        "name": "order_direction",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ],
-                            "default": "asc"
-                        }
-                    },
-                    {
-                        "name": "first",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 20
-                        }
-                    },
-                    {
-                        "name": "skip",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 0
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The request has succeeded.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "data",
-                                        "statistics",
-                                        "rows",
-                                        "rows_before_limit_at_least"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Models.Authorizations"
-                                            }
-                                        },
-                                        "statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "elapsed": {
-                                                    "type": "number"
-                                                },
-                                                "rows_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                },
-                                                "bytes_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                }
-                                            },
-                                            "required": [
-                                                "elapsed",
-                                                "rows_read",
-                                                "bytes_read"
-                                            ]
-                                        },
-                                        "rows": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        },
-                                        "rows_before_limit_at_least": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ]
-            }
-        },
-        "/blocks/date/{date}": {
-            "get": {
-                "tags": [
-                    "Usage",
-                    "Blocks"
-                ],
-                "operationId": "Usage_blocksByDate",
-                "summary": "Blocks by date",
-                "parameters": [
-                    {
-                        "name": "date",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "date"
-                        }
-                    },
-                    {
-                        "name": "order_by",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "number"
-                            ],
-                            "default": "number"
-                        }
-                    },
-                    {
-                        "name": "order_direction",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ],
-                            "default": "asc"
-                        }
-                    },
-                    {
-                        "name": "first",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 20
-                        }
-                    },
-                    {
-                        "name": "skip",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 0
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The request has succeeded.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "data",
-                                        "statistics",
-                                        "rows",
-                                        "rows_before_limit_at_least"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Models.Blocks"
-                                            }
-                                        },
-                                        "statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "elapsed": {
-                                                    "type": "number"
-                                                },
-                                                "rows_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                },
-                                                "bytes_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                }
-                                            },
-                                            "required": [
-                                                "elapsed",
-                                                "rows_read",
-                                                "bytes_read"
-                                            ]
-                                        },
-                                        "rows": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        },
-                                        "rows_before_limit_at_least": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ]
-            }
-        },
-        "/blocks/hash/{hash}": {
-            "get": {
-                "tags": [
-                    "Usage",
-                    "Blocks"
-                ],
-                "operationId": "Usage_blocksByHash",
-                "summary": "Blocks by hash",
-                "parameters": [
-                    {
-                        "name": "hash",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The request has succeeded.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "data",
-                                        "statistics",
-                                        "rows",
-                                        "rows_before_limit_at_least"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Models.Blocks"
-                                            }
-                                        },
-                                        "statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "elapsed": {
-                                                    "type": "number"
-                                                },
-                                                "rows_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                },
-                                                "bytes_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                }
-                                            },
-                                            "required": [
-                                                "elapsed",
-                                                "rows_read",
-                                                "bytes_read"
-                                            ]
-                                        },
-                                        "rows": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        },
-                                        "rows_before_limit_at_least": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ]
-            }
-        },
-        "/blocks/number/{number}": {
-            "get": {
-                "tags": [
-                    "Usage",
-                    "Blocks"
-                ],
-                "operationId": "Usage_blocksByNumber",
-                "summary": "Blocks by number",
-                "parameters": [
-                    {
-                        "name": "number",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "uint64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The request has succeeded.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "data",
-                                        "statistics",
-                                        "rows",
-                                        "rows_before_limit_at_least"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Models.Blocks"
-                                            }
-                                        },
-                                        "statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "elapsed": {
-                                                    "type": "number"
-                                                },
-                                                "rows_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                },
-                                                "bytes_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                }
-                                            },
-                                            "required": [
-                                                "elapsed",
-                                                "rows_read",
-                                                "bytes_read"
-                                            ]
-                                        },
-                                        "rows": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        },
-                                        "rows_before_limit_at_least": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ]
-            }
-        },
-        "/db_ops/block_date/{block_date}": {
-            "get": {
-                "tags": [
-                    "Usage",
-                    "Database Operations"
-                ],
-                "operationId": "Usage_dbOpsByDate",
-                "summary": "Database operations by date",
-                "parameters": [
-                    {
-                        "name": "block_date",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "date"
-                        }
-                    },
-                    {
-                        "name": "code",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "table_name",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "scope",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "primary_key",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "order_by",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "block_number,index",
-                                "block_number"
-                            ],
-                            "default": "block_number,index"
-                        }
-                    },
-                    {
-                        "name": "order_direction",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ],
-                            "default": "asc"
-                        }
-                    },
-                    {
-                        "name": "first",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 20
-                        }
-                    },
-                    {
-                        "name": "skip",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 0
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The request has succeeded.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "data",
-                                        "statistics",
-                                        "rows",
-                                        "rows_before_limit_at_least"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Models.DbOps"
-                                            }
-                                        },
-                                        "statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "elapsed": {
-                                                    "type": "number"
-                                                },
-                                                "rows_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                },
-                                                "bytes_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                }
-                                            },
-                                            "required": [
-                                                "elapsed",
-                                                "rows_read",
-                                                "bytes_read"
-                                            ]
-                                        },
-                                        "rows": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        },
-                                        "rows_before_limit_at_least": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ]
-            }
-        },
-        "/db_ops/block_number/{block_number}": {
-            "get": {
-                "tags": [
-                    "Usage",
-                    "Database Operations"
-                ],
-                "operationId": "Usage_dbOpsByBlock",
-                "summary": "Database operations by block",
-                "parameters": [
-                    {
-                        "name": "block_number",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "uint64"
-                        }
-                    },
-                    {
-                        "name": "code",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "table_name",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "scope",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "primary_key",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "order_by",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "index"
-                            ],
-                            "default": "index"
-                        }
-                    },
-                    {
-                        "name": "order_direction",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ],
-                            "default": "asc"
-                        }
-                    },
-                    {
-                        "name": "first",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 20
-                        }
-                    },
-                    {
-                        "name": "skip",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 0
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The request has succeeded.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "data",
-                                        "statistics",
-                                        "rows",
-                                        "rows_before_limit_at_least"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Models.DbOps"
-                                            }
-                                        },
-                                        "statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "elapsed": {
-                                                    "type": "number"
-                                                },
-                                                "rows_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                },
-                                                "bytes_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                }
-                                            },
-                                            "required": [
-                                                "elapsed",
-                                                "rows_read",
-                                                "bytes_read"
-                                            ]
-                                        },
-                                        "rows": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        },
-                                        "rows_before_limit_at_least": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ]
-            }
-        },
-        "/db_ops/tx_hash/{tx_hash}": {
-            "get": {
-                "tags": [
-                    "Usage",
-                    "Database Operations"
-                ],
-                "operationId": "Usage_dbOpsByTransaction",
-                "summary": "Database operations by transaction",
-                "parameters": [
-                    {
-                        "name": "tx_hash",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "code",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "table_name",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "scope",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "primary_key",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "order_by",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "index"
-                            ],
-                            "default": "index"
-                        }
-                    },
-                    {
-                        "name": "order_direction",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ],
-                            "default": "asc"
-                        }
-                    },
-                    {
-                        "name": "first",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 20
-                        }
-                    },
-                    {
-                        "name": "skip",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 0
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The request has succeeded.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "data",
-                                        "statistics",
-                                        "rows",
-                                        "rows_before_limit_at_least"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Models.DbOps"
-                                            }
-                                        },
-                                        "statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "elapsed": {
-                                                    "type": "number"
-                                                },
-                                                "rows_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                },
-                                                "bytes_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                }
-                                            },
-                                            "required": [
-                                                "elapsed",
-                                                "rows_read",
-                                                "bytes_read"
-                                            ]
-                                        },
-                                        "rows": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        },
-                                        "rows_before_limit_at_least": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ]
-            }
-        },
-        "/health": {
-            "get": {
-                "tags": [
-                    "Monitoring"
-                ],
-                "operationId": "Monitoring_health",
-                "summary": "Health check",
-                "description": "Checks database connection.",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "OK or ApiError.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/metrics": {
-            "get": {
-                "tags": [
-                    "Monitoring"
-                ],
-                "operationId": "Monitoring_metrics",
-                "summary": "Prometheus metrics",
-                "description": "Prometheus metrics.",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "Metrics as text.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/openapi": {
-            "get": {
-                "tags": [
-                    "Docs"
-                ],
-                "operationId": "Docs_openapi",
-                "summary": "OpenAPI JSON spec",
-                "description": "Reflection endpoint to return OpenAPI JSON spec. Also used by Swagger to generate the frontpage.",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "The OpenAPI JSON spec",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "additionalProperties": {}
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/transactions/block_date/{block_date}": {
-            "get": {
-                "tags": [
-                    "Usage",
-                    "Transactions"
-                ],
-                "operationId": "Usage_transactionsByBlockDate",
-                "summary": "Transactions by date",
-                "parameters": [
-                    {
-                        "name": "block_date",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "date"
-                        }
-                    },
-                    {
-                        "name": "order_by",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "block_number,index",
-                                "block_number"
-                            ],
-                            "default": "block_number,index"
-                        }
-                    },
-                    {
-                        "name": "order_direction",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ],
-                            "default": "asc"
-                        }
-                    },
-                    {
-                        "name": "first",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 20
-                        }
-                    },
-                    {
-                        "name": "skip",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 0
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The request has succeeded.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "data",
-                                        "statistics",
-                                        "rows",
-                                        "rows_before_limit_at_least"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Models.Transactions"
-                                            }
-                                        },
-                                        "statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "elapsed": {
-                                                    "type": "number"
-                                                },
-                                                "rows_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                },
-                                                "bytes_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                }
-                                            },
-                                            "required": [
-                                                "elapsed",
-                                                "rows_read",
-                                                "bytes_read"
-                                            ]
-                                        },
-                                        "rows": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        },
-                                        "rows_before_limit_at_least": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ]
-            }
-        },
-        "/transactions/block_number/{block_number}": {
-            "get": {
-                "tags": [
-                    "Usage",
-                    "Transactions"
-                ],
-                "operationId": "Usage_transactionsByBlockNumber",
-                "summary": "Transactions by block",
-                "parameters": [
-                    {
-                        "name": "block_number",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "uint64"
-                        }
-                    },
-                    {
-                        "name": "order_by",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "index"
-                            ],
-                            "default": "index"
-                        }
-                    },
-                    {
-                        "name": "order_direction",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ],
-                            "default": "asc"
-                        }
-                    },
-                    {
-                        "name": "first",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 20
-                        }
-                    },
-                    {
-                        "name": "skip",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "default": 0
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The request has succeeded.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "data",
-                                        "statistics",
-                                        "rows",
-                                        "rows_before_limit_at_least"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Models.Transactions"
-                                            }
-                                        },
-                                        "statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "elapsed": {
-                                                    "type": "number"
-                                                },
-                                                "rows_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                },
-                                                "bytes_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                }
-                                            },
-                                            "required": [
-                                                "elapsed",
-                                                "rows_read",
-                                                "bytes_read"
-                                            ]
-                                        },
-                                        "rows": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        },
-                                        "rows_before_limit_at_least": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ]
-            }
-        },
-        "/transactions/hash/{hash}": {
-            "get": {
-                "tags": [
-                    "Usage",
-                    "Transactions"
-                ],
-                "operationId": "Usage_transactionsByHash",
-                "summary": "Transactions by hash",
-                "parameters": [
-                    {
-                        "name": "hash",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The request has succeeded.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "data",
-                                        "statistics",
-                                        "rows",
-                                        "rows_before_limit_at_least"
-                                    ],
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Models.Transactions"
-                                            }
-                                        },
-                                        "statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "elapsed": {
-                                                    "type": "number"
-                                                },
-                                                "rows_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                },
-                                                "bytes_read": {
-                                                    "type": "integer",
-                                                    "format": "int64"
-                                                }
-                                            },
-                                            "required": [
-                                                "elapsed",
-                                                "rows_read",
-                                                "bytes_read"
-                                            ]
-                                        },
-                                        "rows": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        },
-                                        "rows_before_limit_at_least": {
-                                            "type": "integer",
-                                            "format": "int64"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ]
-            }
-        },
-        "/version": {
-            "get": {
-                "tags": [
-                    "Docs"
-                ],
-                "operationId": "Docs_version",
-                "summary": "Api version",
-                "description": "Api version and Git short commit hash.",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "The Api version and commit hash.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Version"
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiError"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    "version": "0.3.4"
+  },
+  "tags": [
+    {
+      "name": "Usage"
     },
-    "components": {
-        "schemas": {
-            "ApiError": {
-                "type": "object",
-                "required": [
-                    "status",
-                    "code",
-                    "message"
-                ],
-                "properties": {
-                    "status": {
-                        "type": "number",
-                        "enum": [
-                            500,
-                            504,
-                            400,
-                            401,
-                            403,
-                            404,
-                            405
-                        ]
-                    },
-                    "code": {
-                        "type": "string",
-                        "enum": [
-                            "bad_database_response",
-                            "bad_header",
-                            "missing_required_header",
-                            "bad_query_input",
-                            "database_timeout",
-                            "forbidden",
-                            "internal_server_error",
-                            "method_not_allowed",
-                            "route_not_found",
-                            "unauthorized",
-                            "not_found_data"
-                        ]
-                    },
-                    "message": {
-                        "type": "string"
-                    }
-                }
-            },
-            "Models.Actions": {
-                "type": "object",
-                "required": [
-                    "block_time",
-                    "block_number",
-                    "block_hash",
-                    "block_date",
-                    "tx_hash",
-                    "tx_success",
-                    "abi_sequence",
-                    "code_sequence",
-                    "digest",
-                    "global_sequence",
-                    "receipt_receiver",
-                    "recv_sequence",
-                    "account",
-                    "name",
-                    "json_data",
-                    "raw_data",
-                    "index",
-                    "action_ordinal",
-                    "receiver",
-                    "context_free",
-                    "elapsed",
-                    "console",
-                    "raw_return_value",
-                    "json_return_value",
-                    "creator_action_ordinal",
-                    "closest_unnotified_ancestor_action_ordinal",
-                    "action_mroot"
-                ],
-                "properties": {
-                    "block_time": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "block_number": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "block_hash": {
-                        "type": "string"
-                    },
-                    "block_date": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "tx_hash": {
-                        "type": "string"
-                    },
-                    "tx_success": {
-                        "type": "boolean"
-                    },
-                    "abi_sequence": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "code_sequence": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "digest": {
-                        "type": "string"
-                    },
-                    "global_sequence": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "receipt_receiver": {
-                        "type": "string"
-                    },
-                    "recv_sequence": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "account": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "json_data": {
-                        "type": "string"
-                    },
-                    "raw_data": {
-                        "type": "string"
-                    },
-                    "index": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "action_ordinal": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "receiver": {
-                        "type": "string"
-                    },
-                    "context_free": {
-                        "type": "boolean"
-                    },
-                    "elapsed": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "console": {
-                        "type": "string"
-                    },
-                    "raw_return_value": {
-                        "type": "string"
-                    },
-                    "json_return_value": {
-                        "type": "string"
-                    },
-                    "creator_action_ordinal": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "closest_unnotified_ancestor_action_ordinal": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "action_mroot": {
-                        "type": "string"
-                    }
-                }
-            },
-            "Models.Authorizations": {
-                "type": "object",
-                "required": [
-                    "block_time",
-                    "block_number",
-                    "block_hash",
-                    "block_date",
-                    "tx_hash",
-                    "tx_success",
-                    "action_index",
-                    "index",
-                    "actor",
-                    "permission"
-                ],
-                "properties": {
-                    "block_time": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "block_number": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "block_hash": {
-                        "type": "string"
-                    },
-                    "block_date": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "tx_hash": {
-                        "type": "string"
-                    },
-                    "tx_success": {
-                        "type": "boolean"
-                    },
-                    "action_index": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "index": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "actor": {
-                        "type": "string"
-                    },
-                    "permission": {
-                        "type": "string"
-                    }
-                }
-            },
-            "Models.Blocks": {
-                "type": "object",
-                "required": [
-                    "time",
-                    "number",
-                    "hash",
-                    "date",
-                    "previous",
-                    "producer",
-                    "confirmed",
-                    "schedule_version",
-                    "version",
-                    "producer_signature",
-                    "dpos_proposed_irreversible_blocknum",
-                    "dpos_irreversible_blocknum",
-                    "transaction_mroot",
-                    "action_mroot",
-                    "blockroot_merkle_node_count",
-                    "size",
-                    "total_transactions",
-                    "successful_transactions",
-                    "failed_transactions",
-                    "total_actions",
-                    "total_db_ops"
-                ],
-                "properties": {
-                    "time": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "number": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "hash": {
-                        "type": "string"
-                    },
-                    "date": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "previous": {
-                        "type": "string"
-                    },
-                    "producer": {
-                        "type": "string"
-                    },
-                    "confirmed": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "schedule_version": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "version": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "producer_signature": {
-                        "type": "string"
-                    },
-                    "dpos_proposed_irreversible_blocknum": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "dpos_irreversible_blocknum": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "transaction_mroot": {
-                        "type": "string"
-                    },
-                    "action_mroot": {
-                        "type": "string"
-                    },
-                    "blockroot_merkle_node_count": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "size": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "total_transactions": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "successful_transactions": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "failed_transactions": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "total_actions": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "total_db_ops": {
-                        "type": "integer",
-                        "format": "uint64"
-                    }
-                }
-            },
-            "Models.DbOps": {
-                "type": "object",
-                "required": [
-                    "block_time",
-                    "block_number",
-                    "block_hash",
-                    "block_date",
-                    "tx_hash",
-                    "tx_success",
-                    "action_index",
-                    "index",
-                    "operation",
-                    "operation_code",
-                    "code",
-                    "scope",
-                    "table_name",
-                    "primary_key",
-                    "old_payer",
-                    "new_payer",
-                    "old_data",
-                    "new_data",
-                    "old_data_json",
-                    "new_data_json"
-                ],
-                "properties": {
-                    "block_time": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "block_number": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "block_hash": {
-                        "type": "string"
-                    },
-                    "block_date": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "tx_hash": {
-                        "type": "string"
-                    },
-                    "tx_success": {
-                        "type": "boolean"
-                    },
-                    "action_index": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "index": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "operation": {
-                        "type": "string"
-                    },
-                    "operation_code": {
-                        "type": "integer",
-                        "format": "uint8"
-                    },
-                    "code": {
-                        "type": "string"
-                    },
-                    "scope": {
-                        "type": "string"
-                    },
-                    "table_name": {
-                        "type": "string"
-                    },
-                    "primary_key": {
-                        "type": "string"
-                    },
-                    "old_payer": {
-                        "type": "string"
-                    },
-                    "new_payer": {
-                        "type": "string"
-                    },
-                    "old_data": {
-                        "type": "string"
-                    },
-                    "new_data": {
-                        "type": "string"
-                    },
-                    "old_data_json": {
-                        "type": "string"
-                    },
-                    "new_data_json": {
-                        "type": "string"
-                    }
-                }
-            },
-            "Models.Transactions": {
-                "type": "object",
-                "required": [
-                    "block_time",
-                    "block_number",
-                    "block_hash",
-                    "block_date",
-                    "hash",
-                    "index",
-                    "elapsed",
-                    "net_usage",
-                    "scheduled",
-                    "cpu_usage_micro_seconds",
-                    "net_usage_words",
-                    "status",
-                    "status_code",
-                    "success",
-                    "transaction_mroot"
-                ],
-                "properties": {
-                    "block_time": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "block_number": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "block_hash": {
-                        "type": "string"
-                    },
-                    "block_date": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "hash": {
-                        "type": "string"
-                    },
-                    "index": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "elapsed": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "net_usage": {
-                        "type": "integer",
-                        "format": "uint64"
-                    },
-                    "scheduled": {
-                        "type": "boolean"
-                    },
-                    "cpu_usage_micro_seconds": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "net_usage_words": {
-                        "type": "integer",
-                        "format": "uint32"
-                    },
-                    "status": {
-                        "type": "string",
-                        "enum": [
-                            "Executed"
-                        ]
-                    },
-                    "status_code": {
-                        "type": "integer",
-                        "format": "uint8"
-                    },
-                    "success": {
-                        "type": "boolean"
-                    },
-                    "transaction_mroot": {
-                        "type": "string"
-                    }
-                }
-            },
-            "Version": {
-                "type": "object",
-                "required": [
-                    "version",
-                    "commit"
-                ],
-                "properties": {
-                    "version": {
-                        "type": "string",
-                        "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
-                    },
-                    "commit": {
-                        "type": "string",
-                        "pattern": "^[0-9a-f]{7}$"
-                    }
-                }
-            }
-        },
-        "securitySchemes": {
-            "ApiKeyAuth": {
-                "type": "apiKey",
-                "in": "header",
-                "name": "X-Api-Key"
-            }
-        }
+    {
+      "name": "Blocks"
+    },
+    {
+      "name": "Transactions"
+    },
+    {
+      "name": "Actions"
+    },
+    {
+      "name": "Database Operations"
+    },
+    {
+      "name": "Authorizations"
+    },
+    {
+      "name": "Docs"
+    },
+    {
+      "name": "Monitoring"
     }
+  ],
+  "paths": {
+    "/actions/block_date/{block_date}": {
+      "get": {
+        "tags": [
+          "Usage",
+          "Actions"
+        ],
+        "operationId": "Usage_actionsByDate",
+        "summary": "Actions by date",
+        "parameters": [
+          {
+            "name": "block_date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "account",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "receiver",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "block_number,index",
+                "block_number"
+              ],
+              "default": "block_number,index"
+            }
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "first",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 20
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "statistics",
+                    "rows",
+                    "rows_before_limit_at_least"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Models.Actions"
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "elapsed": {
+                          "type": "number"
+                        },
+                        "rows_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "bytes_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      },
+                      "required": [
+                        "elapsed",
+                        "rows_read",
+                        "bytes_read"
+                      ]
+                    },
+                    "rows": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "rows_before_limit_at_least": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/actions/block_number/{block_number}": {
+      "get": {
+        "tags": [
+          "Usage",
+          "Actions"
+        ],
+        "operationId": "Usage_actionsByBlock",
+        "summary": "Actions by block",
+        "parameters": [
+          {
+            "name": "block_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          },
+          {
+            "name": "account",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "receiver",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "block_number,index",
+                "block_number"
+              ],
+              "default": "block_number,index"
+            }
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "first",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 20
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "statistics",
+                    "rows",
+                    "rows_before_limit_at_least"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Models.Actions"
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "elapsed": {
+                          "type": "number"
+                        },
+                        "rows_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "bytes_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      },
+                      "required": [
+                        "elapsed",
+                        "rows_read",
+                        "bytes_read"
+                      ]
+                    },
+                    "rows": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "rows_before_limit_at_least": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/actions/tx_hash/{tx_hash}": {
+      "get": {
+        "tags": [
+          "Usage",
+          "Actions"
+        ],
+        "operationId": "Usage_actionsByTransaction",
+        "summary": "Actions by transaction",
+        "parameters": [
+          {
+            "name": "tx_hash",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "account",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "receiver",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "index"
+              ],
+              "default": "index"
+            }
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "first",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 20
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "statistics",
+                    "rows",
+                    "rows_before_limit_at_least"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Models.Actions"
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "elapsed": {
+                          "type": "number"
+                        },
+                        "rows_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "bytes_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      },
+                      "required": [
+                        "elapsed",
+                        "rows_read",
+                        "bytes_read"
+                      ]
+                    },
+                    "rows": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "rows_before_limit_at_least": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/authorizations/block_date/{block_date}": {
+      "get": {
+        "tags": [
+          "Usage",
+          "Authorizations"
+        ],
+        "operationId": "Usage_authorizationsByDate",
+        "summary": "Authorizations by date",
+        "parameters": [
+          {
+            "name": "block_date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "actor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "permission",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "action_index",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "uint32"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "block_number,action_index,index",
+                "block_number",
+                "action_index",
+                "index"
+              ],
+              "default": "block_number,action_index,index"
+            }
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "first",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 20
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "statistics",
+                    "rows",
+                    "rows_before_limit_at_least"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Models.Authorizations"
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "elapsed": {
+                          "type": "number"
+                        },
+                        "rows_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "bytes_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      },
+                      "required": [
+                        "elapsed",
+                        "rows_read",
+                        "bytes_read"
+                      ]
+                    },
+                    "rows": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "rows_before_limit_at_least": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/authorizations/block_number/{block_number}": {
+      "get": {
+        "tags": [
+          "Usage",
+          "Authorizations"
+        ],
+        "operationId": "Usage_authorizationsByBlock",
+        "summary": "Authorizations by block",
+        "parameters": [
+          {
+            "name": "block_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          },
+          {
+            "name": "actor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "permission",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "action_index",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "uint32"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "block_number,action_index,index",
+                "block_number",
+                "action_index",
+                "index"
+              ],
+              "default": "block_number,action_index,index"
+            }
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "first",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 20
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "statistics",
+                    "rows",
+                    "rows_before_limit_at_least"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Models.Authorizations"
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "elapsed": {
+                          "type": "number"
+                        },
+                        "rows_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "bytes_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      },
+                      "required": [
+                        "elapsed",
+                        "rows_read",
+                        "bytes_read"
+                      ]
+                    },
+                    "rows": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "rows_before_limit_at_least": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/authorizations/tx_hash/{tx_hash}": {
+      "get": {
+        "tags": [
+          "Usage",
+          "Authorizations"
+        ],
+        "operationId": "Usage_authorizationsByTransaction",
+        "summary": "Authorizations by transaction",
+        "parameters": [
+          {
+            "name": "tx_hash",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "actor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "permission",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "action_index",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "uint32"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "action_index,index",
+                "action_index",
+                "index"
+              ],
+              "default": "action_index,index"
+            }
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "first",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 20
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "statistics",
+                    "rows",
+                    "rows_before_limit_at_least"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Models.Authorizations"
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "elapsed": {
+                          "type": "number"
+                        },
+                        "rows_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "bytes_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      },
+                      "required": [
+                        "elapsed",
+                        "rows_read",
+                        "bytes_read"
+                      ]
+                    },
+                    "rows": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "rows_before_limit_at_least": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/blocks/date/{date}": {
+      "get": {
+        "tags": [
+          "Usage",
+          "Blocks"
+        ],
+        "operationId": "Usage_blocksByDate",
+        "summary": "Blocks by date",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "number"
+              ],
+              "default": "number"
+            }
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "first",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 20
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "statistics",
+                    "rows",
+                    "rows_before_limit_at_least"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Models.Blocks"
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "elapsed": {
+                          "type": "number"
+                        },
+                        "rows_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "bytes_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      },
+                      "required": [
+                        "elapsed",
+                        "rows_read",
+                        "bytes_read"
+                      ]
+                    },
+                    "rows": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "rows_before_limit_at_least": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/blocks/hash/{hash}": {
+      "get": {
+        "tags": [
+          "Usage",
+          "Blocks"
+        ],
+        "operationId": "Usage_blocksByHash",
+        "summary": "Blocks by hash",
+        "parameters": [
+          {
+            "name": "hash",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "statistics",
+                    "rows",
+                    "rows_before_limit_at_least"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Models.Blocks"
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "elapsed": {
+                          "type": "number"
+                        },
+                        "rows_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "bytes_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      },
+                      "required": [
+                        "elapsed",
+                        "rows_read",
+                        "bytes_read"
+                      ]
+                    },
+                    "rows": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "rows_before_limit_at_least": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/blocks/number/{number}": {
+      "get": {
+        "tags": [
+          "Usage",
+          "Blocks"
+        ],
+        "operationId": "Usage_blocksByNumber",
+        "summary": "Blocks by number",
+        "parameters": [
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "statistics",
+                    "rows",
+                    "rows_before_limit_at_least"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Models.Blocks"
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "elapsed": {
+                          "type": "number"
+                        },
+                        "rows_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "bytes_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      },
+                      "required": [
+                        "elapsed",
+                        "rows_read",
+                        "bytes_read"
+                      ]
+                    },
+                    "rows": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "rows_before_limit_at_least": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/db_ops/block_date/{block_date}": {
+      "get": {
+        "tags": [
+          "Usage",
+          "Database Operations"
+        ],
+        "operationId": "Usage_dbOpsByDate",
+        "summary": "Database operations by date",
+        "parameters": [
+          {
+            "name": "block_date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "table_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "primary_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "block_number,index",
+                "block_number"
+              ],
+              "default": "block_number,index"
+            }
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "first",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 20
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "statistics",
+                    "rows",
+                    "rows_before_limit_at_least"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Models.DbOps"
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "elapsed": {
+                          "type": "number"
+                        },
+                        "rows_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "bytes_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      },
+                      "required": [
+                        "elapsed",
+                        "rows_read",
+                        "bytes_read"
+                      ]
+                    },
+                    "rows": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "rows_before_limit_at_least": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/db_ops/block_number/{block_number}": {
+      "get": {
+        "tags": [
+          "Usage",
+          "Database Operations"
+        ],
+        "operationId": "Usage_dbOpsByBlock",
+        "summary": "Database operations by block",
+        "parameters": [
+          {
+            "name": "block_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "table_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "primary_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "index"
+              ],
+              "default": "index"
+            }
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "first",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 20
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "statistics",
+                    "rows",
+                    "rows_before_limit_at_least"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Models.DbOps"
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "elapsed": {
+                          "type": "number"
+                        },
+                        "rows_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "bytes_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      },
+                      "required": [
+                        "elapsed",
+                        "rows_read",
+                        "bytes_read"
+                      ]
+                    },
+                    "rows": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "rows_before_limit_at_least": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/db_ops/tx_hash/{tx_hash}": {
+      "get": {
+        "tags": [
+          "Usage",
+          "Database Operations"
+        ],
+        "operationId": "Usage_dbOpsByTransaction",
+        "summary": "Database operations by transaction",
+        "parameters": [
+          {
+            "name": "tx_hash",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "table_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "primary_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "index"
+              ],
+              "default": "index"
+            }
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "first",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 20
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "statistics",
+                    "rows",
+                    "rows_before_limit_at_least"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Models.DbOps"
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "elapsed": {
+                          "type": "number"
+                        },
+                        "rows_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "bytes_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      },
+                      "required": [
+                        "elapsed",
+                        "rows_read",
+                        "bytes_read"
+                      ]
+                    },
+                    "rows": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "rows_before_limit_at_least": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "Monitoring"
+        ],
+        "operationId": "Monitoring_health",
+        "summary": "Health check",
+        "description": "Checks database connection.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK or ApiError.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "tags": [
+          "Monitoring"
+        ],
+        "operationId": "Monitoring_metrics",
+        "summary": "Prometheus metrics",
+        "description": "Prometheus metrics.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Metrics as text.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi": {
+      "get": {
+        "tags": [
+          "Docs"
+        ],
+        "operationId": "Docs_openapi",
+        "summary": "OpenAPI JSON spec",
+        "description": "Reflection endpoint to return OpenAPI JSON spec. Also used by Swagger to generate the frontpage.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The OpenAPI JSON spec",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transactions/block_date/{block_date}": {
+      "get": {
+        "tags": [
+          "Usage",
+          "Transactions"
+        ],
+        "operationId": "Usage_transactionsByBlockDate",
+        "summary": "Transactions by date",
+        "parameters": [
+          {
+            "name": "block_date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "block_number,index",
+                "block_number"
+              ],
+              "default": "block_number,index"
+            }
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "first",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 20
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "statistics",
+                    "rows",
+                    "rows_before_limit_at_least"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Models.Transactions"
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "elapsed": {
+                          "type": "number"
+                        },
+                        "rows_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "bytes_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      },
+                      "required": [
+                        "elapsed",
+                        "rows_read",
+                        "bytes_read"
+                      ]
+                    },
+                    "rows": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "rows_before_limit_at_least": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/transactions/block_number/{block_number}": {
+      "get": {
+        "tags": [
+          "Usage",
+          "Transactions"
+        ],
+        "operationId": "Usage_transactionsByBlockNumber",
+        "summary": "Transactions by block",
+        "parameters": [
+          {
+            "name": "block_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "index"
+              ],
+              "default": "index"
+            }
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "first",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 20
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "statistics",
+                    "rows",
+                    "rows_before_limit_at_least"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Models.Transactions"
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "elapsed": {
+                          "type": "number"
+                        },
+                        "rows_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "bytes_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      },
+                      "required": [
+                        "elapsed",
+                        "rows_read",
+                        "bytes_read"
+                      ]
+                    },
+                    "rows": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "rows_before_limit_at_least": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/transactions/hash/{hash}": {
+      "get": {
+        "tags": [
+          "Usage",
+          "Transactions"
+        ],
+        "operationId": "Usage_transactionsByHash",
+        "summary": "Transactions by hash",
+        "parameters": [
+          {
+            "name": "hash",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "statistics",
+                    "rows",
+                    "rows_before_limit_at_least"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Models.Transactions"
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "properties": {
+                        "elapsed": {
+                          "type": "number"
+                        },
+                        "rows_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "bytes_read": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      },
+                      "required": [
+                        "elapsed",
+                        "rows_read",
+                        "bytes_read"
+                      ]
+                    },
+                    "rows": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "rows_before_limit_at_least": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/version": {
+      "get": {
+        "tags": [
+          "Docs"
+        ],
+        "operationId": "Docs_version",
+        "summary": "Api version",
+        "description": "Api version and Git short commit hash.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The Api version and commit hash.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Version"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiError": {
+        "type": "object",
+        "required": [
+          "status",
+          "code",
+          "message"
+        ],
+        "properties": {
+          "status": {
+            "type": "number",
+            "enum": [
+              500,
+              504,
+              400,
+              401,
+              403,
+              404,
+              405
+            ]
+          },
+          "code": {
+            "type": "string",
+            "enum": [
+              "bad_database_response",
+              "bad_header",
+              "missing_required_header",
+              "bad_query_input",
+              "database_timeout",
+              "forbidden",
+              "internal_server_error",
+              "method_not_allowed",
+              "route_not_found",
+              "unauthorized",
+              "not_found_data"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "Models.Actions": {
+        "type": "object",
+        "required": [
+          "block_time",
+          "block_number",
+          "block_hash",
+          "block_date",
+          "tx_hash",
+          "tx_success",
+          "abi_sequence",
+          "code_sequence",
+          "digest",
+          "global_sequence",
+          "receipt_receiver",
+          "recv_sequence",
+          "account",
+          "name",
+          "json_data",
+          "raw_data",
+          "index",
+          "action_ordinal",
+          "receiver",
+          "context_free",
+          "elapsed",
+          "console",
+          "raw_return_value",
+          "json_return_value",
+          "creator_action_ordinal",
+          "closest_unnotified_ancestor_action_ordinal",
+          "action_mroot"
+        ],
+        "properties": {
+          "block_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "block_number": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "block_hash": {
+            "type": "string"
+          },
+          "block_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "tx_hash": {
+            "type": "string"
+          },
+          "tx_success": {
+            "type": "boolean"
+          },
+          "abi_sequence": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "code_sequence": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "digest": {
+            "type": "string"
+          },
+          "global_sequence": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "receipt_receiver": {
+            "type": "string"
+          },
+          "recv_sequence": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "account": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "json_data": {
+            "type": "string"
+          },
+          "raw_data": {
+            "type": "string"
+          },
+          "index": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "action_ordinal": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "receiver": {
+            "type": "string"
+          },
+          "context_free": {
+            "type": "boolean"
+          },
+          "elapsed": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "console": {
+            "type": "string"
+          },
+          "raw_return_value": {
+            "type": "string"
+          },
+          "json_return_value": {
+            "type": "string"
+          },
+          "creator_action_ordinal": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "closest_unnotified_ancestor_action_ordinal": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "action_mroot": {
+            "type": "string"
+          }
+        }
+      },
+      "Models.Authorizations": {
+        "type": "object",
+        "required": [
+          "block_time",
+          "block_number",
+          "block_hash",
+          "block_date",
+          "tx_hash",
+          "tx_success",
+          "action_index",
+          "index",
+          "actor",
+          "permission"
+        ],
+        "properties": {
+          "block_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "block_number": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "block_hash": {
+            "type": "string"
+          },
+          "block_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "tx_hash": {
+            "type": "string"
+          },
+          "tx_success": {
+            "type": "boolean"
+          },
+          "action_index": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "index": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "actor": {
+            "type": "string"
+          },
+          "permission": {
+            "type": "string"
+          }
+        }
+      },
+      "Models.Blocks": {
+        "type": "object",
+        "required": [
+          "time",
+          "number",
+          "hash",
+          "date",
+          "previous",
+          "producer",
+          "confirmed",
+          "schedule_version",
+          "version",
+          "producer_signature",
+          "dpos_proposed_irreversible_blocknum",
+          "dpos_irreversible_blocknum",
+          "transaction_mroot",
+          "action_mroot",
+          "blockroot_merkle_node_count",
+          "size",
+          "total_transactions",
+          "successful_transactions",
+          "failed_transactions",
+          "total_actions",
+          "total_db_ops"
+        ],
+        "properties": {
+          "time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "number": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "hash": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "previous": {
+            "type": "string"
+          },
+          "producer": {
+            "type": "string"
+          },
+          "confirmed": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "schedule_version": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "version": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "producer_signature": {
+            "type": "string"
+          },
+          "dpos_proposed_irreversible_blocknum": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "dpos_irreversible_blocknum": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "transaction_mroot": {
+            "type": "string"
+          },
+          "action_mroot": {
+            "type": "string"
+          },
+          "blockroot_merkle_node_count": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "total_transactions": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "successful_transactions": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "failed_transactions": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "total_actions": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "total_db_ops": {
+            "type": "integer",
+            "format": "uint64"
+          }
+        }
+      },
+      "Models.DbOps": {
+        "type": "object",
+        "required": [
+          "block_time",
+          "block_number",
+          "block_hash",
+          "block_date",
+          "tx_hash",
+          "tx_success",
+          "action_index",
+          "index",
+          "operation",
+          "operation_code",
+          "code",
+          "scope",
+          "table_name",
+          "primary_key",
+          "old_payer",
+          "new_payer",
+          "old_data",
+          "new_data",
+          "old_data_json",
+          "new_data_json"
+        ],
+        "properties": {
+          "block_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "block_number": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "block_hash": {
+            "type": "string"
+          },
+          "block_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "tx_hash": {
+            "type": "string"
+          },
+          "tx_success": {
+            "type": "boolean"
+          },
+          "action_index": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "index": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "operation": {
+            "type": "string"
+          },
+          "operation_code": {
+            "type": "integer",
+            "format": "uint8"
+          },
+          "code": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string"
+          },
+          "table_name": {
+            "type": "string"
+          },
+          "primary_key": {
+            "type": "string"
+          },
+          "old_payer": {
+            "type": "string"
+          },
+          "new_payer": {
+            "type": "string"
+          },
+          "old_data": {
+            "type": "string"
+          },
+          "new_data": {
+            "type": "string"
+          },
+          "old_data_json": {
+            "type": "string"
+          },
+          "new_data_json": {
+            "type": "string"
+          }
+        }
+      },
+      "Models.Transactions": {
+        "type": "object",
+        "required": [
+          "block_time",
+          "block_number",
+          "block_hash",
+          "block_date",
+          "hash",
+          "index",
+          "elapsed",
+          "net_usage",
+          "scheduled",
+          "cpu_usage_micro_seconds",
+          "net_usage_words",
+          "status",
+          "status_code",
+          "success",
+          "transaction_mroot"
+        ],
+        "properties": {
+          "block_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "block_number": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "block_hash": {
+            "type": "string"
+          },
+          "block_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "hash": {
+            "type": "string"
+          },
+          "index": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "elapsed": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "net_usage": {
+            "type": "integer",
+            "format": "uint64"
+          },
+          "scheduled": {
+            "type": "boolean"
+          },
+          "cpu_usage_micro_seconds": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "net_usage_words": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "Executed"
+            ]
+          },
+          "status_code": {
+            "type": "integer",
+            "format": "uint8"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "transaction_mroot": {
+            "type": "string"
+          }
+        }
+      },
+      "Version": {
+        "type": "object",
+        "required": [
+          "version",
+          "commit"
+        ],
+        "properties": {
+          "version": {
+            "type": "string",
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
+          },
+          "commit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{7}$"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Api-Key"
+      }
+    }
+  }
 }
