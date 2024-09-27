@@ -10,7 +10,10 @@
 ### Generate API Docs
 
 ```bash
-bun generate.js
+$ bun generate.js
+✅ created ./openapi3/eos-openapi.json
+✅ created ./openapi3/kylin-openapi.json
+✅ created ./openapi3/wax-openapi.json
 ```
 
 ### Test Docs
